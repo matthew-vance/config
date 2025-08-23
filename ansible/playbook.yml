@@ -7,6 +7,8 @@
       - fd
       - ripgrep
       - jq
+    brew_casks:
+      - ghostty
   tasks:
     - name: Ensure required Homebrew packages are installed
       community.general.homebrew:
@@ -14,3 +16,9 @@
         state: present
         update_homebrew: true
       loop: "{{ brew_packages }}"
+
+    - name: Ensure required Homebrew casks are installed
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ brew_casks }}"
