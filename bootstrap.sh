@@ -71,6 +71,22 @@ else
   ok "Homebrew is already installed."
 fi
 
+# Update Homebrew to ensure latest formulae and casks
+info "Updating Homebrew..."
+brew update
+ok "Homebrew is up to date."
+
+ # Run Homebrew doctor to check for potential issues (run only once)
+info "Running Homebrew doctor..."
+BREW_DOCTOR_OUTPUT=""
+BREW_DOCTOR_EXIT=0
+BREW_DOCTOR_OUTPUT=$( (brew doctor) 2>&1 ) || BREW_DOCTOR_EXIT=$?
+echo "$BREW_DOCTOR_OUTPUT"
+echo "$BREW_DOCTOR_OUTPUT" >&2
+if [ "$BREW_DOCTOR_EXIT" -eq 0 ]; then
+  ok "Homebrew doctor completed."
+fi
+
 # Ensure git is installed
 if ! has_cmd git; then
   warn "Git not found. Installing git..."
@@ -195,6 +211,12 @@ if ! has_cmd ansible; then
   pipx inject --include-apps ansible argcomplete
 else
   ok "Ansible is already installed."
+fi
+
+
+# Warn about brew doctor issues at the end
+if [ "$BREW_DOCTOR_EXIT" -ne 0 ]; then
+  warn "brew doctor reported issues. Review the output above."
 fi
 
 info "Bootstrap complete."
