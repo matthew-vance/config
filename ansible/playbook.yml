@@ -8,12 +8,9 @@
       - ripgrep
       - jq
   tasks:
-    - name: Ensure Homebrew is installed
-      community.general.homebrew:
-        state: present
-
     - name: Ensure required Homebrew packages are installed
       community.general.homebrew:
         name: "{{ item }}"
         state: present
+        update_homebrew: true
       loop: "{{ brew_packages }}"
