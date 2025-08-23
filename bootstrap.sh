@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # bootstrap.sh - Bootstrap script for MacOS configuration management
 # Ensures the machine is ready for configuration management
 
@@ -12,10 +12,34 @@ ensure_macos() {
   fi
 }
 
+COLOR_INFO=$'\033[1;34m'
+COLOR_WARN=$'\033[1;33m'
+COLOR_OK=$'\033[1;32m'
+COLOR_ERROR=$'\033[1;31m'
+COLOR_RESET=$'\033[0m'
 
-SCRIPTS_DIR="$(dirname "$0")/scripts"
-# shellcheck source=scripts/log.sh
-. "$SCRIPTS_DIR/log.sh"
+log() {
+  local level="$1"
+  local color="$2"
+  shift 2
+  printf '%s[%s]%s ' "$color" "$level" "$COLOR_RESET"
+  printf '%s' "$@"
+  printf '\n'
+}
+
+info() {
+  log "INFO" "$COLOR_INFO" "$@"
+}
+warn() {
+  log "WARN" "$COLOR_WARN" "$@"
+}
+ok() {
+  log "OK" "$COLOR_OK" "$@"
+}
+
+error() {
+  log "ERROR" "$COLOR_ERROR" "$@" >&2
+}
 
 show_help() {
   cat <<EOF
@@ -71,6 +95,10 @@ initialize_sudo() {
 
 install_homebrew() {
   if ! has_cmd brew; then
+    if ! has_cmd bash; then
+      error "bash not found, required for Homebrew installation. Please install bash and re-run this script."
+      exit 1
+    fi
     if ! has_cmd curl; then
       error "curl not found, required for Homebrew installation. Please install curl and re-run this script."
       exit 1
