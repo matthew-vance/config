@@ -5,8 +5,12 @@
   vars:
     brew_packages:
       - fd
-      - ripgrep
+      - git
       - jq
+      - just
+      - pipx
+      - ripgrep
+      - zsh
     brew_casks:
       - ghostty
   tasks:
