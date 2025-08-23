@@ -64,6 +64,10 @@ has_cmd() {
 
 install_homebrew() {
   if ! has_cmd brew; then
+    if ! has_cmd curl; then
+      error "curl not found, required for Homebrew installation. Please install curl and re-run this script."
+      exit 1
+    fi
     warn "Homebrew not found. Installing Homebrew..."
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   else
