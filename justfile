@@ -1,7 +1,9 @@
-# Justfile for MacOS config management
+default:
+    @just --list
 
+[working-directory: 'ansible']
 run-ansible:
-    ansible-playbook ansible/playbook.yml
+    ansible-playbook playbook.yml --limit $(hostname)
 
 bootstrap:
     ./bootstrap.sh

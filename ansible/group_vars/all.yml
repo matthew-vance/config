@@ -1,0 +1,12 @@
+---
+common_brew_packages:
+  - fd
+  - git
+  - jq
+  - just
+  - pipx
+  - ripgrep
+  - zsh
+
+common_brew_casks:
+  - ghostty

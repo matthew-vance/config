@@ -1,4 +1,7 @@
+---
 all:
   hosts:
-    localhost:
+    Matthews-MacBook-Pro.local:
+      ansible_connection: local
+    taillight-mbp:
       ansible_connection: local

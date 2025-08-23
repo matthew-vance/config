@@ -1,0 +1,6 @@
+---
+host_brew_packages:
+  - brogue
+
+host_brew_casks:
+  - iina
