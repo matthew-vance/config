@@ -1,0 +1,10 @@
+---
+- name: Deploy .zshenv
+  copy:
+    content: |
+      # Managed by Ansible - do not edit directly
+      {{ lookup('file', 'dot-zshenv') }}
+    dest: "{{ ansible_env.HOME }}/.zshenv"
+    owner: "{{ ansible_user_id | default(ansible_user) }}"
+    group: staff
+    mode: "0644"
