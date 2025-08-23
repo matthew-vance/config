@@ -56,8 +56,8 @@ has_cmd() {
 }
 
 initialize_sudo() {
-  info "This script requires sudo access to install Homebrew."
-  info "Please enter your password when prompted."
+  info "This script requires sudo access to install Homebrew and set the default shell."
+  info "Please enter your password when prompted. You may be asked for it multiple times."
   sudo -v
   
   (
