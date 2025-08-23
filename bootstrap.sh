@@ -5,6 +5,12 @@
 set -o errexit
 set -o nounset
 
+# Ensure running on macOS
+if [ "$(uname)" != "Darwin" ]; then
+  echo "Error: This script must be run on macOS (Darwin)." >&2
+  exit 1
+fi
+
 SCRIPTS_DIR="$(dirname "$0")/scripts"
 # shellcheck source=scripts/log.sh
 . "$SCRIPTS_DIR/log.sh"
