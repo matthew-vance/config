@@ -11,3 +11,5 @@ common_brew_packages:
 
 common_brew_casks:
   - ghostty
+
+managed_by_comment: "# Managed by Ansible - do not edit directly"

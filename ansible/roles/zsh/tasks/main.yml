@@ -6,36 +6,27 @@
     group: staff
     mode: "0755"
 
-- name: Deploy .zshrc to ZDOTDIR
-  copy:
-    content: |
-      # Managed by Ansible - do not edit directly
-
-      {{ lookup('file', 'dot-zshrc') }}
-    dest: "{{ zdotdir }}/.zshrc"
-    owner: "{{ ansible_user_id | default(ansible_user) }}"
-    group: staff
-
-    mode: "0644"
-
-- name: Deploy .zprofile to ZDOTDIR
-  copy:
-    content: |
-      # Managed by Ansible - do not edit directly
-
-      {{ lookup('file', 'dot-zprofile') }}
-    dest: "{{ zdotdir }}/.zprofile"
-    owner: "{{ ansible_user_id | default(ansible_user) }}"
-    group: staff
-    mode: "0644"
-
 - name: Deploy .zshenv to home
   copy:
     content: |
-      # Managed by Ansible - do not edit directly
+      {{ managed_by_comment }}
 
       {{ lookup('file', 'dot-zshenv') }}
     dest: "{{ ansible_env.HOME }}/.zshenv"
     owner: "{{ ansible_user_id | default(ansible_user) }}"
     group: staff
     mode: "0644"
+
+- name: Deploy ZSH configuration files to ZDOTDIR
+  copy:
+    content: |
+      {{ managed_by_comment }}
+
+      {{ lookup('file', 'dot-' + item.filename | replace('.', '')) }}
+    dest: "{{ zdotdir }}/{{ item.filename }}"
+    owner: "{{ ansible_user_id | default(ansible_user) }}"
+    group: staff
+    mode: "0644"
+  loop:
+    - { filename: .zshrc }
+    - { filename: .zprofile }
