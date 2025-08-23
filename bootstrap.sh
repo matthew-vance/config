@@ -150,6 +150,13 @@ fi
 fnm default "$FNM_LATEST_LTS"
 ok "Latest LTS Node.js (%s) is set as default." "$FNM_LATEST_LTS"
 
+# Ensure zx is installed globally with npm
+if ! has_cmd zx; then
+  warn "zx not found. Installing zx globally with npm..."
+  npm install -g zx
+else
+  ok "zx is already installed globally."
+fi
 
 # Ensure pipx is installed
 if ! has_cmd pipx; then
