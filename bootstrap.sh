@@ -13,21 +13,26 @@ show_help() {
   cat <<EOF
 Usage: ./bootstrap.sh [OPTIONS]
 
-Bootstraps this MacOS machine for configuration management.
+Bootstraps this macOS machine for configuration management.
 
 Options:
   -h, --help    Show this help message and exit
 
-This script ensures the following tools are installed:
-  - Homebrew
-  - git
-  - zsh
-  - just
-  - fnm (Fast Node Manager)
-  - Node.js (LTS)
-  - Ansible
+This script performs the following actions:
+  - Installs Homebrew if missing
+  - Installs git if missing
+  - Installs Homebrew zsh if missing
+  - Adds Homebrew zsh to /etc/shells if not present
+  - Sets Homebrew zsh as the default shell if not already
+  - Installs just if missing
+  - Installs fnm (Fast Node Manager) if missing
+  - Installs the latest LTS version of Node.js using fnm and sets it as default
+  - Installs zx globally with npm if missing
+  - Installs pipx with Homebrew if missing
+  - Installs Ansible (and argcomplete) with pipx if missing
 
 All steps are idempotent and safe to run multiple times.
+You may need to restart your terminal for some changes to take effect.
 EOF
 }
 
