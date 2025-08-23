@@ -15,6 +15,18 @@
     dest: "{{ zdotdir }}/.zshrc"
     owner: "{{ ansible_user_id | default(ansible_user) }}"
     group: staff
+
+    mode: "0644"
+
+- name: Deploy .zprofile to ZDOTDIR
+  copy:
+    content: |
+      # Managed by Ansible - do not edit directly
+
+      {{ lookup('file', 'dot-zprofile') }}
+    dest: "{{ zdotdir }}/.zprofile"
+    owner: "{{ ansible_user_id | default(ansible_user) }}"
+    group: staff
     mode: "0644"
 
 - name: Deploy .zshenv to home
