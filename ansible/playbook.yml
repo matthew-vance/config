@@ -16,13 +16,11 @@
   tasks:
     - name: Ensure required Homebrew packages are installed
       community.general.homebrew:
-        name: "{{ item }}"
+        name: "{{ brew_packages }}"
         state: present
         update_homebrew: true
-      loop: "{{ brew_packages }}"
 
     - name: Ensure required Homebrew casks are installed
       community.general.homebrew_cask:
-        name: "{{ item }}"
+        name: "{{ brew_casks }}"
         state: present
-      loop: "{{ brew_casks }}"
