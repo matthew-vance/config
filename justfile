@@ -2,3 +2,6 @@
 
 run-ansible:
     ansible-playbook ansible/playbook.yml
+
+bootstrap:
+    ./bootstrap.sh
