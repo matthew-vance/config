@@ -99,6 +99,8 @@ else
 fi
 
 # Ensure Node.js (LTS) and fnm are installed
+
+# Ensure fnm is installed
 if ! has_cmd fnm; then
   printf '%s[WARN]%s fnm (Fast Node Manager) not found. Installing fnm...\n' "$COLOR_WARN" "$COLOR_RESET"
   brew install fnm
@@ -106,13 +108,24 @@ else
   printf '%s[OK]%s fnm is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
 fi
 
-if ! has_cmd node; then
-  printf '%s[WARN]%s Node.js not found. Installing latest LTS Node.js with fnm...\n' "$COLOR_WARN" "$COLOR_RESET"
-  fnm install --lts
-  fnm use --lts
-else
-  printf '%s[OK]%s Node.js is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+# Ensure latest LTS Node.js is installed and active
+FNM_LATEST_LTS=$(fnm ls-remote --lts | tail -1 | awk '{print $1}')
+FNM_INSTALLED_LTS=$(fnm ls | grep -Eo "v[0-9]+\\.[0-9]+\\.[0-9]+" | grep -F "$FNM_LATEST_LTS" || true)
+FNM_CURRENT=$(fnm current | awk '{print $1}')
+
+if [ -z "$FNM_INSTALLED_LTS" ]; then
+  printf '%s[WARN]%s Latest LTS Node.js (%s) not installed. Installing...\n' "$COLOR_WARN" "$COLOR_RESET" "$FNM_LATEST_LTS"
+  fnm install "$FNM_LATEST_LTS"
 fi
+
+if [ "$FNM_CURRENT" != "$FNM_LATEST_LTS" ]; then
+  printf '%s[INFO]%s Switching to latest LTS Node.js (%s)...\n' "$COLOR_INFO" "$COLOR_RESET" "$FNM_LATEST_LTS"
+  fnm use "$FNM_LATEST_LTS"
+fi
+
+# Set latest LTS as default
+fnm default "$FNM_LATEST_LTS"
+printf '%s[OK]%s Latest LTS Node.js (%s) is set as default.\n' "$COLOR_OK" "$COLOR_RESET" "$FNM_LATEST_LTS"
 
 
 # Ensure pipx is installed
