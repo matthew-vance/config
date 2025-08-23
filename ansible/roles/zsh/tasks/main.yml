@@ -1,6 +1,6 @@
 - name: Ensure ZDOTDIR exists
   file:
-    path: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}/zsh"
+    path: "{{ zdotdir }}"
     state: directory
     owner: "{{ ansible_user_id | default(ansible_user) }}"
     group: staff
@@ -12,7 +12,7 @@
       # Managed by Ansible - do not edit directly
 
       {{ lookup('file', 'dot-zshrc') }}
-    dest: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}/zsh/.zshrc"
+    dest: "{{ zdotdir }}/.zshrc"
     owner: "{{ ansible_user_id | default(ansible_user) }}"
     group: staff
     mode: "0644"

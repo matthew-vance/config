@@ -1,0 +1,2 @@
+---
+zdotdir: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}/zsh"
