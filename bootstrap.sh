@@ -2,13 +2,12 @@
 # bootstrap.sh - Bootstrap script for MacOS configuration management
 # Ensures the machine is ready for configuration management as per project standards
 
-set -e
+set -o errexit
+set -o nounset
 
-# Color format variables (use ANSI escapes with $'...')
-COLOR_INFO=$'\033[1;34m'
-COLOR_WARN=$'\033[1;33m'
-COLOR_OK=$'\033[1;32m'
-COLOR_RESET=$'\033[0m'
+SCRIPTS_DIR="$(dirname "$0")/scripts"
+# shellcheck source=scripts/log.sh
+. "$SCRIPTS_DIR/log.sh"
 
 show_help() {
   cat <<EOF
@@ -48,26 +47,7 @@ has_cmd() {
 }
 
 
-# Logging functions
-log() {
-  # $1 = level, $2 = color, $3... = message
-  local level="$1"
-  local color="$2"
-  shift 2
-  printf '%s[%s]%s ' "$color" "$level" "$COLOR_RESET"
-  printf "%s" "$@"
-  printf '\n'
-}
 
-info() {
-  log "INFO" "$COLOR_INFO" "$@"
-}
-warn() {
-  log "WARN" "$COLOR_WARN" "$@"
-}
-ok() {
-  log "OK" "$COLOR_OK" "$@"
-}
 
 # Print info
 info "Starting bootstrap process..."
