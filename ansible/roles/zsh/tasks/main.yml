@@ -1,8 +1,27 @@
----
-- name: Deploy .zshenv
+- name: Ensure ZDOTDIR exists
+  file:
+    path: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}/zsh"
+    state: directory
+    owner: "{{ ansible_user_id | default(ansible_user) }}"
+    group: staff
+    mode: "0755"
+
+- name: Deploy .zshrc to ZDOTDIR
   copy:
     content: |
       # Managed by Ansible - do not edit directly
+
+      {{ lookup('file', 'dot-zshrc') }}
+    dest: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}/zsh/.zshrc"
+    owner: "{{ ansible_user_id | default(ansible_user) }}"
+    group: staff
+    mode: "0644"
+
+- name: Deploy .zshenv to home
+  copy:
+    content: |
+      # Managed by Ansible - do not edit directly
+
       {{ lookup('file', 'dot-zshenv') }}
     dest: "{{ ansible_env.HOME }}/.zshenv"
     owner: "{{ ansible_user_id | default(ansible_user) }}"
