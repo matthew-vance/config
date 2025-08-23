@@ -47,65 +47,87 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
+
+# Logging functions
+log() {
+  # $1 = level, $2 = color, $3... = message
+  local level="$1"
+  local color="$2"
+  shift 2
+  printf '%s[%s]%s ' "$color" "$level" "$COLOR_RESET"
+  printf "%s" "$@"
+  printf '\n'
+}
+
+info() {
+  log "INFO" "$COLOR_INFO" "$@"
+}
+warn() {
+  log "WARN" "$COLOR_WARN" "$@"
+}
+ok() {
+  log "OK" "$COLOR_OK" "$@"
+}
+
 # Print info
-printf '%s[INFO]%s Starting bootstrap process...\n' "$COLOR_INFO" "$COLOR_RESET"
+info "Starting bootstrap process..."
 
 # Check for Homebrew and install if missing
 if ! has_cmd brew; then
-  printf '%s[WARN]%s Homebrew not found. Installing Homebrew...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "Homebrew not found. Installing Homebrew..."
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
-  printf '%s[OK]%s Homebrew is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "Homebrew is already installed."
 fi
 
 # Ensure git is installed
 if ! has_cmd git; then
-  printf '%s[WARN]%s Git not found. Installing git...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "Git not found. Installing git..."
   brew install git
 else
-  printf '%s[OK]%s Git is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "Git is already installed."
 fi
 
 # Ensure zsh is installed at the Homebrew path and set as default shell if needed
 BREW_ZSH="$(brew --prefix)/bin/zsh"
 if [ ! -x "$BREW_ZSH" ]; then
-  printf '%s[WARN]%s Homebrew zsh not found at %s. Installing zsh...\n' "$COLOR_WARN" "$COLOR_RESET" "$BREW_ZSH"
+  warn "Homebrew zsh not found at %s. Installing zsh..." "$BREW_ZSH"
   brew install zsh
 else
-  printf '%s[OK]%s Homebrew zsh is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "Homebrew zsh is already installed."
 fi
 
 # Add brew zsh to /etc/shells if not present
 if ! grep -q "$BREW_ZSH" /etc/shells; then
-  printf '%s[INFO]%s Adding %s to /etc/shells\n' "$COLOR_INFO" "$COLOR_RESET" "$BREW_ZSH"
+  info "Adding %s to /etc/shells" "$BREW_ZSH"
   echo "$BREW_ZSH" | sudo tee -a /etc/shells > /dev/null
 fi
 
 # Change default shell if not already
 if [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$BREW_ZSH" ]; then
-  printf '%s[INFO]%s Setting %s as default shell\n' "$COLOR_INFO" "$COLOR_RESET" "$BREW_ZSH"
+  info "Setting %s as default shell" "$BREW_ZSH"
   chsh -s "$BREW_ZSH"
-  printf '%s[INFO]%s Default shell updated. Restart your terminal to use %s.\n' "$COLOR_INFO" "$COLOR_RESET" "$BREW_ZSH"
+  info "Default shell updated. Restart your terminal to use %s." "$BREW_ZSH"
 else
-  printf '%s[OK]%s Zsh is already the default shell.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "Zsh is already the default shell."
 fi
 
 # Ensure just is installed
 if ! has_cmd just; then
-  printf '%s[WARN]%s just not found. Installing just...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "just not found. Installing just..."
   brew install just
 else
-  printf '%s[OK]%s just is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "just is already installed."
 fi
 
 # Ensure Node.js (LTS) and fnm are installed
 
 # Ensure fnm is installed
 if ! has_cmd fnm; then
-  printf '%s[WARN]%s fnm (Fast Node Manager) not found. Installing fnm...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "fnm (Fast Node Manager) not found. Installing fnm..."
   brew install fnm
 else
-  printf '%s[OK]%s fnm is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "fnm is already installed."
 fi
 
 # Ensure latest LTS Node.js is installed and active
@@ -113,38 +135,39 @@ FNM_LATEST_LTS=$(fnm ls-remote --lts | tail -1 | awk '{print $1}')
 FNM_INSTALLED_LTS=$(fnm ls | grep -Eo "v[0-9]+\\.[0-9]+\\.[0-9]+" | grep -F "$FNM_LATEST_LTS" || true)
 FNM_CURRENT=$(fnm current | awk '{print $1}')
 
+
 if [ -z "$FNM_INSTALLED_LTS" ]; then
-  printf '%s[WARN]%s Latest LTS Node.js (%s) not installed. Installing...\n' "$COLOR_WARN" "$COLOR_RESET" "$FNM_LATEST_LTS"
+  warn "Latest LTS Node.js (%s) not installed. Installing..." "$FNM_LATEST_LTS"
   fnm install "$FNM_LATEST_LTS"
 fi
 
 if [ "$FNM_CURRENT" != "$FNM_LATEST_LTS" ]; then
-  printf '%s[INFO]%s Switching to latest LTS Node.js (%s)...\n' "$COLOR_INFO" "$COLOR_RESET" "$FNM_LATEST_LTS"
+  info "Switching to latest LTS Node.js (%s)..." "$FNM_LATEST_LTS"
   fnm use "$FNM_LATEST_LTS"
 fi
 
 # Set latest LTS as default
 fnm default "$FNM_LATEST_LTS"
-printf '%s[OK]%s Latest LTS Node.js (%s) is set as default.\n' "$COLOR_OK" "$COLOR_RESET" "$FNM_LATEST_LTS"
+ok "Latest LTS Node.js (%s) is set as default." "$FNM_LATEST_LTS"
 
 
 # Ensure pipx is installed
 if ! has_cmd pipx; then
-  printf '%s[WARN]%s pipx not found. Installing pipx with Homebrew...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "pipx not found. Installing pipx with Homebrew..."
   brew install pipx
   pipx ensurepath
 else
-  printf '%s[OK]%s pipx is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "pipx is already installed."
 fi
 
 # Ensure Ansible is installed with pipx
 if ! has_cmd ansible; then
-  printf '%s[WARN]%s Ansible not found. Installing Ansible with pipx...\n' "$COLOR_WARN" "$COLOR_RESET"
+  warn "Ansible not found. Installing Ansible with pipx..."
   pipx install --include-deps ansible
   pipx inject --include-apps ansible argcomplete
 else
-  printf '%s[OK]%s Ansible is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
+  ok "Ansible is already installed."
 fi
 
-printf '%s[INFO]%s Bootstrap complete.\n' "$COLOR_INFO" "$COLOR_RESET"
-printf '%s[INFO]%s You may need to restart your terminal for changes to take effect.\n' "$COLOR_INFO" "$COLOR_RESET"
+info "Bootstrap complete."
+info "You may need to restart your terminal for changes to take effect."
