@@ -135,17 +135,21 @@ install_ansible() {
   fi
 }
 
+install_ansible_with_pipx() {
+  install_pipx
+  install_ansible
+}
+
 main() {
   ensure_macos
   info "Starting bootstrap process..."
-  
+
   install_homebrew
   update_homebrew
   install_git
   install_zsh
   install_just
-  install_pipx
-  install_ansible
+  install_ansible_with_pipx
 
   info "Bootstrap complete."
   info "You may need to restart your terminal for changes to take effect."
