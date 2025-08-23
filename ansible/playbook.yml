@@ -1,0 +1,19 @@
+---
+- name: Configure macOS machine with Homebrew packages
+  hosts: localhost
+  become: false
+  vars:
+    brew_packages:
+      - fd
+      - ripgrep
+      - jq
+  tasks:
+    - name: Ensure Homebrew is installed
+      community.general.homebrew:
+        state: present
+
+    - name: Ensure required Homebrew packages are installed
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ brew_packages }}"
