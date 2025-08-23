@@ -55,6 +55,20 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
+initialize_sudo() {
+  info "This script requires sudo access to install Homebrew."
+  info "Please enter your password when prompted."
+  sudo -v
+  
+  (
+    while true; do
+      sudo -n true
+      sleep 60
+      kill -0 "$$" || exit
+    done
+  ) 2>/dev/null &
+}
+
 install_homebrew() {
   if ! has_cmd brew; then
     if ! has_cmd curl; then
@@ -63,6 +77,11 @@ install_homebrew() {
     fi
     warn "Homebrew not found. Installing Homebrew..."
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    if [ -f /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+      info "Added Homebrew to PATH"
+    fi
   else
     ok "Homebrew is already installed."
   fi
@@ -144,6 +163,7 @@ main() {
   ensure_macos
   info "Starting bootstrap process..."
 
+  initialize_sudo
   install_homebrew
   update_homebrew
   install_git
