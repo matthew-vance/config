@@ -4,6 +4,7 @@ common_brew_packages:
   - git
   - jq
   - just
+  - neovim
   - pipx
   - ripgrep
   - zsh
