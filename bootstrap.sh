@@ -1,11 +1,9 @@
 #!/usr/bin/env sh
 # bootstrap.sh - Bootstrap script for MacOS configuration management
-# Ensures the machine is ready for configuration management as per project standards
-
+# Ensures the machine is ready for configuration management
 
 set -o errexit
 set -o nounset
-
 
 ensure_macos() {
   if [ "$(uname)" != "Darwin" ]; then
@@ -56,8 +54,6 @@ for arg in "$@"; do
   esac
 done
 
-
-# Check if a command exists
 has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
@@ -83,10 +79,9 @@ update_homebrew() {
 
 run_brew_doctor() {
   info "Running Homebrew doctor..."
-  BREW_DOCTOR_OUTPUT=""
-  BREW_DOCTOR_EXIT=0
+  local BREW_DOCTOR_OUTPUT=""
+  local BREW_DOCTOR_EXIT=0
   BREW_DOCTOR_OUTPUT=$( (brew doctor) 2>&1 ) || BREW_DOCTOR_EXIT=$?
-  echo "$BREW_DOCTOR_OUTPUT"
   echo "$BREW_DOCTOR_OUTPUT" >&2
   if [ "$BREW_DOCTOR_EXIT" -eq 0 ]; then
     ok "Homebrew doctor completed."
