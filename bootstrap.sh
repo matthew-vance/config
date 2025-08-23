@@ -36,6 +36,8 @@ This script performs the following actions:
   - Installs fnm (Fast Node Manager) if missing
   - Installs the latest LTS version of Node.js using fnm and sets it as default
   - Installs zx globally with npm if missing
+  - Installs pyenv if missing
+  - Installs latest Python version with pyenv and sets it as default
   - Installs pipx with Homebrew if missing
   - Installs Ansible (and argcomplete) with pipx if missing
 
@@ -218,10 +220,6 @@ install_ansible() {
     ok "Ansible is already installed."
   fi
 }
-
-
-
-
 
 main() {
   ensure_macos
