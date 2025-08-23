@@ -111,8 +111,6 @@ else
   ok "just is already installed."
 fi
 
-# Ensure Node.js (LTS) and fnm are installed
-
 # Ensure fnm is installed
 if ! has_cmd fnm; then
   warn "fnm (Fast Node Manager) not found. Installing fnm..."
@@ -149,6 +147,38 @@ else
   ok "zx is already installed globally."
 fi
 
+# Ensure Python and pyenv are installed and configured
+if ! has_cmd pyenv; then
+  warn "pyenv not found. Installing pyenv with Homebrew..."
+  brew install pyenv
+else
+  ok "pyenv is already installed."
+fi
+
+# Initialize pyenv for this script
+if command -v pyenv 1>/dev/null 2>&1; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init --path)"
+fi
+
+# Get latest stable Python version
+PYENV_LATEST=$(pyenv install --list | grep -E '^  [0-9]+\.[0-9]+\.[0-9]+$' | tr -d ' ' | grep -v - | tail -1)
+PYENV_INSTALLED=$(pyenv versions --bare | grep -F "$PYENV_LATEST" || true)
+PYENV_GLOBAL=$(pyenv global 2>/dev/null | head -1)
+
+if [ -z "$PYENV_INSTALLED" ]; then
+  warn "Latest Python ($PYENV_LATEST) not installed. Installing..."
+  pyenv install "$PYENV_LATEST"
+fi
+
+if [ "$PYENV_GLOBAL" != "$PYENV_LATEST" ]; then
+  info "Setting latest Python ($PYENV_LATEST) as global default..."
+  pyenv global "$PYENV_LATEST"
+fi
+
+ok "Latest Python ($PYENV_LATEST) is set as global default."
+
 # Ensure pipx is installed
 if ! has_cmd pipx; then
   warn "pipx not found. Installing pipx with Homebrew..."
@@ -169,3 +199,4 @@ fi
 
 info "Bootstrap complete."
 info "You may need to restart your terminal for changes to take effect."
+
