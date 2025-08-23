@@ -147,3 +147,4 @@ else
 fi
 
 printf '%s[INFO]%s Bootstrap complete.\n' "$COLOR_INFO" "$COLOR_RESET"
+printf '%s[INFO]%s You may need to restart your terminal for changes to take effect.\n' "$COLOR_INFO" "$COLOR_RESET"
