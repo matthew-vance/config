@@ -3,5 +3,7 @@ all:
   hosts:
     Matthews-MacBook-Pro.local:
       ansible_connection: local
+    Tests-Virtual-Machine.local:
+      ansible_connection: local
     taillight-mbp:
       ansible_connection: local
