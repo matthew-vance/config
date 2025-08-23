@@ -140,7 +140,8 @@ fi
 # Ensure Ansible is installed with pipx
 if ! has_cmd ansible; then
   printf '%s[WARN]%s Ansible not found. Installing Ansible with pipx...\n' "$COLOR_WARN" "$COLOR_RESET"
-  pipx install ansible
+  pipx install --include-deps ansible
+  pipx inject --include-apps ansible argcomplete
 else
   printf '%s[OK]%s Ansible is already installed.\n' "$COLOR_OK" "$COLOR_RESET"
 fi
