@@ -1,5 +1,6 @@
 .DS_Store
 
 .zcompcache
+.zsh_plugins.zsh
 **/zsh/local/**
 !**/zsh/local/.gitkeep
