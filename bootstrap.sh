@@ -79,20 +79,6 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
-initialize_sudo() {
-  info "This script requires sudo access to install Homebrew and set the default shell."
-  info "Please enter your password when prompted. You may be asked for it multiple times."
-  sudo -v
-  
-  (
-    while true; do
-      sudo -n true
-      sleep 60
-      kill -0 "$$" || exit
-    done
-  ) 2>/dev/null &
-}
-
 install_homebrew() {
   if ! has_cmd brew; then
     if ! has_cmd bash; then
@@ -104,6 +90,8 @@ install_homebrew() {
       exit 1
     fi
     warn "Homebrew not found. Installing Homebrew..."
+    info "Homebrew installation requires sudo access. Please enter your password when prompted."
+    sudo -v
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     if [ -f /opt/homebrew/bin/brew ]; then
@@ -187,17 +175,34 @@ install_ansible_with_pipx() {
   install_ansible
 }
 
+install_stow() {
+  if ! has_cmd stow; then
+    warn "GNU Stow not found. Installing GNU Stow..."
+    brew install stow
+  else
+    ok "GNU Stow is already installed."
+  fi
+  
+  if [ ! -L "$HOME/.stow-global-ignore" ] || [ "$(readlink "$HOME/.stow-global-ignore")" != "$PWD/dot-stow-global-ignore" ]; then
+    info "Creating symlink for .stow-global-ignore in home directory"
+    ln -sf "$PWD/dot-stow-global-ignore" "$HOME/.stow-global-ignore"
+    ok "Created symlink for .stow-global-ignore in home directory"
+  else
+    ok "Symlink for .stow-global-ignore already exists and points to the correct target"
+  fi
+}
+
 main() {
   ensure_macos
   info "Starting bootstrap process..."
 
-  initialize_sudo
   install_homebrew
   update_homebrew
   install_git
   install_zsh
   install_just
   install_ansible_with_pipx
+  install_stow
 
   info "Bootstrap complete."
   info "You may need to restart your terminal for changes to take effect."

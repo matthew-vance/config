@@ -8,8 +8,15 @@ common_brew_packages:
   - pipx
   - ripgrep
   - zsh
+  - stow
+  - bat
+  - fzf
+  - eza
+  - zoxide
+  - git-delta
+  - starship
+  - lazygit
+  - lazydocker
 
 common_brew_casks:
   - ghostty
-
-managed_by_comment: "# Managed by Ansible - do not edit directly"
