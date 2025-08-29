@@ -2,12 +2,6 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# homebrew
-if [[ -d /opt/homebrew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    fpath+=("$(brew --prefix)/share/zsh/site-functions")
-fi
-
 # history
 HISTFILE=$HOME/.local/share/zsh/history
 
@@ -30,13 +24,11 @@ setopt HIST_SAVE_NO_DUPS
 setopt HIST_VERIFY
 setopt SHARE_HISTORY
 
-# Changing Directories
 setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt PUSHD_MINUS
 
-# Completion
 setopt ALWAYS_TO_END
 setopt AUTO_LIST
 setopt AUTO_MENU
@@ -46,16 +38,14 @@ setopt EXTENDED_GLOB
 unsetopt FLOW_CONTROL
 unsetopt MENU_COMPLETE
 
-# Expansion and Globbing
 setopt NUMERIC_GLOB_SORT
 
-# Input/Output
 setopt INTERACTIVE_COMMENTS
 setopt HASH_EXECUTABLES_ONLY
 
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+if has_cmd bat; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
 
 
 # https://junegunn.github.io/fzf/
@@ -83,24 +73,12 @@ if has_cmd fzf; then
   source <(fzf --zsh)
 fi
 
-export PATH="$HOME/go/bin:$PATH"
-
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-export PATH="$HOME/Library/Application Support/fnm:$PATH"
 if has_cmd fnm; then
   eval "$(fnm env --use-on-cd)"
 fi
 
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+[[ -d $ZSH_COMPDUMP:h ]] || mkdir -p "$ZSH_COMPDUMP":h
 
 
 # plugins
@@ -192,7 +170,7 @@ function y() {
 has_cmd docker && eval "$(docker completion zsh)"
 has_cmd kubectl && source <(kubectl completion zsh)
 has_cmd zoxide && eval "$(zoxide init zsh --cmd cd)"
-has_cmd op && eval "$(op completion zsh)"
+has_cmd op && eval "$(op completion zsh)" # This is what makes the terminal ask to access data from other applications
 has_cmd sdk && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # 1password ssh-agent integration
@@ -200,13 +178,6 @@ if [[ -f "$HOME/.agent-bridge.sh" ]]; then
     source "$HOME/.agent-bridge.sh"
 fi
 
-[[ -f "$HOME/.config/zsh/local/local.zsh" ]] && source "$HOME/.config/zsh/local/local.zsh"
+[[ -f "$ZDOTDIR/local/local.zsh" ]] && source "$ZDOTDIR/local/local.zsh"
 
-# Calling compinit again in case local.zsh modified fpath
-autoload -Uz compinit
-compinit -u -d "$ZSH_COMPDUMP"
-
-# pure prompt
-autoload -U promptinit; promptinit
-zstyle :prompt:pure:git:stash show yes
-prompt pure
+has_cmd starship && eval "$(starship init zsh)"

@@ -15,8 +15,10 @@ common_brew_packages:
   - lazygit
   - neovim
   - pipx
+  - pyenv
+  - rbenv
   - ripgrep
-  - pure
+  - starship
   - stow
   - watchman
   - wget
