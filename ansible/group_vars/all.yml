@@ -1,22 +1,23 @@
 ---
 common_brew_packages:
+  - bat
+  - eza
   - fd
+  - fzf
   - git
+  - git-delta
   - jq
   - just
+  - lazydocker
+  - lazygit
   - neovim
   - pipx
   - ripgrep
-  - zsh
-  - stow
-  - bat
-  - fzf
-  - eza
-  - zoxide
-  - git-delta
   - starship
-  - lazygit
-  - lazydocker
+  - stow
+  - yazi
+  - zoxide
+  - zsh
 
 common_brew_casks:
   - ghostty
