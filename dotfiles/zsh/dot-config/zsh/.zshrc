@@ -2,6 +2,12 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# homebrew
+if [[ -d /opt/homebrew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    fpath+=("$(brew --prefix)/share/zsh/site-functions")
+fi
+
 # history
 HISTFILE=$HOME/.local/share/zsh/history
 
@@ -77,12 +83,14 @@ if has_cmd fzf; then
   source <(fzf --zsh)
 fi
 
-has_cmd go && export PATH="$HOME/go/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 
-has_cmd brew && FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 
+export PATH="$HOME/Library/Application Support/fnm:$PATH"
 if has_cmd fnm; then
-  export PATH="$HOME/Library/Application Support/fnm:$PATH"
   eval "$(fnm env --use-on-cd)"
 fi
 
@@ -92,9 +100,8 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-has_cmd docker && eval "$(docker completion zsh)"
-has_cmd zoxide && eval "$(zoxide init zsh --cmd cd)"
-has_cmd starship && eval "$(starship init zsh)"
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+
 
 # plugins
 antidote_dir="$HOME/.antidote"
@@ -182,4 +189,24 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+has_cmd docker && eval "$(docker completion zsh)"
+has_cmd kubectl && source <(kubectl completion zsh)
+has_cmd zoxide && eval "$(zoxide init zsh --cmd cd)"
+has_cmd op && eval "$(op completion zsh)"
+has_cmd sdk && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+# 1password ssh-agent integration
+if [[ -f "$HOME/.agent-bridge.sh" ]]; then
+    source "$HOME/.agent-bridge.sh"
+fi
+
+[[ -f "$HOME/.config/zsh/local/local.zsh" ]] && source "$HOME/.config/zsh/local/local.zsh"
+
+# Calling compinit again in case local.zsh modified fpath
+autoload -Uz compinit
+compinit -u -d "$ZSH_COMPDUMP"
+
+# pure prompt
+autoload -U promptinit; promptinit
+zstyle :prompt:pure:git:stash show yes
+prompt pure
