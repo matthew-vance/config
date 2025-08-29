@@ -1,8 +1,11 @@
 ---
 common_brew_packages:
   - bat
+  - btop
   - eza
+  - fastfetch
   - fd
+  - fnm
   - fzf
   - git
   - git-delta
@@ -13,11 +16,21 @@ common_brew_packages:
   - neovim
   - pipx
   - ripgrep
-  - starship
+  - pure
   - stow
+  - watchman
+  - wget
+  - xh
   - yazi
   - zoxide
   - zsh
 
 common_brew_casks:
+  - 1password
+  - 1password-cli
   - ghostty
+  - hyperkey
+  - maccy
+  - obsidian
+  - raycast
+  - rectangle-pro
