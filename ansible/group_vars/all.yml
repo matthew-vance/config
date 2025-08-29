@@ -36,3 +36,5 @@ common_brew_casks:
   - obsidian
   - raycast
   - rectangle-pro
+
+common_docker_containers: []

@@ -178,6 +178,13 @@ if [[ -f "$HOME/.agent-bridge.sh" ]]; then
     source "$HOME/.agent-bridge.sh"
 fi
 
+if has_cmd pyenv; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init - zsh)"
+fi
+
+
 [[ -f "$ZDOTDIR/local/local.zsh" ]] && source "$ZDOTDIR/local/local.zsh"
 
 has_cmd starship && eval "$(starship init zsh)"
