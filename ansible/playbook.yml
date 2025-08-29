@@ -1,9 +1,16 @@
 ---
 - hosts: all
   become: false
+  gather_facts: true
   vars:
     brew_packages: "{{ common_brew_packages + host_brew_packages | default([]) }}"
     brew_casks: "{{ common_brew_casks + host_brew_casks | default([]) }}"
+    docker_containers: "{{ common_docker_containers + host_docker_containers | default([]) }}"
+  pre_tasks:
+    - name: Bootstrap packaging so Ansible's pip module can run
+      ansible.builtin.command: >
+        {{ ansible_facts.python.executable }} -m pip install -U pip setuptools wheel packaging
+      changed_when: false
   tasks:
     - name: Update Homebrew
       community.general.homebrew:
@@ -18,3 +25,35 @@
       community.general.homebrew_cask:
         name: "{{ brew_casks }}"
         state: present
+
+    - name: Install required Python packages
+      ansible.builtin.pip:
+        name:
+          - requests
+
+    - name: Manage Docker containers
+      community.docker.docker_container:
+        name: "{{ item.name }}"
+        image: "{{ item.image }}"
+        state: "{{ item.state | default('started') }}"
+        restart_policy: "{{ item.restart_policy | default('unless-stopped') }}"
+        ports: "{{ item.ports | default([]) }}"
+        volumes: "{{ item.volumes | default([]) }}"
+        env: "{{ item.env | default({}) }}"
+      loop: "{{ docker_containers }}"
+      when: docker_containers | length > 0
+
+    - name: Check if SDKMAN is installed
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+      register: sdkman_installed
+      when: install_sdkman is defined and install_sdkman | bool
+
+    - name: Install SDKMAN
+      ansible.builtin.shell: |
+        curl -s "https://get.sdkman.io?ci=true" | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+      when:
+        - install_sdkman is defined and install_sdkman | bool
+        - not sdkman_installed.stat.exists | default(false)

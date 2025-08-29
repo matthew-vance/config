@@ -5,5 +5,5 @@ all:
       ansible_connection: local
     Tests-Virtual-Machine.local:
       ansible_connection: local
-    taillight-mbp:
+    KQ21CX7KQV.local: # Tail Light MacBook Pro
       ansible_connection: local
