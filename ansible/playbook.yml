@@ -42,3 +42,18 @@
         env: "{{ item.env | default({}) }}"
       loop: "{{ docker_containers }}"
       when: docker_containers | length > 0
+
+    - name: Check if SDKMAN is installed
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+      register: sdkman_installed
+      when: install_sdkman is defined and install_sdkman | bool
+
+    - name: Install SDKMAN
+      ansible.builtin.shell: |
+        curl -s "https://get.sdkman.io?ci=true" | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.sdkman/bin/sdkman-init.sh"
+      when:
+        - install_sdkman is defined and install_sdkman | bool
+        - not sdkman_installed.stat.exists | default(false)
