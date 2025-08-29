@@ -2,12 +2,12 @@ default:
     @just --list
 
 [working-directory: 'ansible']
-run-ansible:
+ansible:
     ansible-playbook playbook.yml --limit $(hostname)
 
 [working-directory: 'dotfiles']
 stow tool:
-    @stow {{tool}} --dotfiles --target $HOME --verbose --no-folding
+    @stow {{tool}} --dotfiles --target $HOME --verbose
 
 [working-directory: 'dotfiles']
 unstow tool:
