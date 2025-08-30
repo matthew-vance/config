@@ -5,12 +5,6 @@
   vars:
     brew_packages: "{{ common_brew_packages + host_brew_packages | default([]) }}"
     brew_casks: "{{ common_brew_casks + host_brew_casks | default([]) }}"
-    docker_containers: "{{ common_docker_containers + host_docker_containers | default([]) }}"
-  pre_tasks:
-    - name: Bootstrap packaging so Ansible's pip module can run
-      ansible.builtin.command: >
-        {{ ansible_facts.python.executable }} -m pip install -U pip setuptools wheel packaging
-      changed_when: false
   roles:
     - role: sdkman
       when: install_sdkman | default(false) | bool
@@ -28,20 +22,3 @@
       community.general.homebrew_cask:
         name: "{{ brew_casks }}"
         state: present
-
-    - name: Install required Python packages
-      ansible.builtin.pip:
-        name:
-          - requests
-
-    - name: Manage Docker containers
-      community.docker.docker_container:
-        name: "{{ item.name }}"
-        image: "{{ item.image }}"
-        state: "{{ item.state | default('started') }}"
-        restart_policy: "{{ item.restart_policy | default('unless-stopped') }}"
-        ports: "{{ item.ports | default([]) }}"
-        volumes: "{{ item.volumes | default([]) }}"
-        env: "{{ item.env | default({}) }}"
-      loop: "{{ docker_containers }}"
-      when: docker_containers | length > 0
