@@ -5,3 +5,6 @@
 .zsh_plugins.zsh
 **/zsh/local/**
 !**/zsh/local/.gitkeep
+
+dot-local.gitconfig
+.local.gitconfig
