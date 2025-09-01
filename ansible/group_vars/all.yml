@@ -13,6 +13,10 @@ common_brew_packages:
   - just
   - lazydocker
   - lazygit
+  - lua
+  - luajit
+  - luarocks
+  - make
   - neovim
   - pipx
   - pyenv
@@ -30,10 +34,16 @@ common_brew_packages:
 common_brew_casks:
   - 1password
   - 1password-cli
+  - cleanshot
   - docker-desktop
+  - font-jetbrains-mono
+  - font-jetbrains-mono-nerd-font
   - ghostty
+  - google-chrome
   - hyperkey
   - maccy
   - obsidian
   - raycast
   - rectangle-pro
+  - slack
+  - visual-studio-code

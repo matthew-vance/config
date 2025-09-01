@@ -3,4 +3,10 @@ host_brew_packages:
   - brogue
 
 host_brew_casks:
+  - daisydisk
+  - discord
   - iina
+  - jordanbaird-ice
+  - love
+  - mullvad-vpn
+  - wifiman
