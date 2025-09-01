@@ -9,6 +9,7 @@ common_brew_packages:
   - fzf
   - git
   - git-delta
+  - go
   - jq
   - just
   - lazydocker
