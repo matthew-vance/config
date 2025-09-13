@@ -1,9 +1,0 @@
----
-all:
-  hosts:
-    Matthews-MacBook-Pro.local:
-      ansible_connection: local
-    Tests-Virtual-Machine.local:
-      ansible_connection: local
-    KQ21CX7KQV.local: # Tail Light MacBook Pro
-      ansible_connection: local
