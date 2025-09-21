@@ -35,7 +35,6 @@ brew "xh"
 brew "yazi"
 brew "zoxide"
 brew "zsh"
-brew "hashicorp/tap/terraform"
 brew "jesseduffield/lazydocker/lazydocker"
 cask "1password"
 cask "1password-cli"
@@ -51,8 +50,6 @@ cask "raycast"
 cask "rectangle-pro"
 cask "slack"
 cask "visual-studio-code"
-mas "Amphetamine", id: 937984704
-mas "Color Picker", id: 1545870783
 mas "Drafts", id: 1435957248
 mas "Dropover", id: 1355679052
 mas "Xcode", id: 497799835
