@@ -49,6 +49,18 @@
 
     home-manager.enable = true;
 
+    lazygit = {
+      enable = true;
+      package = null; # Use system version. This can be removed once I make sense of user-level packages in home-manager.
+      settings = {
+        promptToReturnFromSubprocesses = false;
+        disableStartupPopups = true;
+        quitOnTopLevelReturn = true;
+        os.editPreset = "nvim";
+        gui.nerdFontsVersion = "3";
+      };
+    };
+
     starship = {
       enable = true;
       settings = {
