@@ -25,6 +25,8 @@
   };
 
   users.users."matthewvance" = {
+    name = "matthewvance";
+    home = "/Users/matthewvance";
     shell = pkgs.zsh;
   };
 }
