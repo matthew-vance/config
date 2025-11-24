@@ -37,4 +37,14 @@
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/G8WN10/FlsokXrjIJ2C7Ev70Q8OL66dSfRXmP94hU";
     };
   };
+
+  programs.ghostty = {
+    enable = true;
+    package = null; # Use homebrew version
+    settings = {
+      font-size = 14;
+      font-family = "JetBrains Mono";
+      theme = "Night Owl";
+    };
+  };
 }
