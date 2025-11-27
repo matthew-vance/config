@@ -31,6 +31,7 @@
             eza
             fd
             fnm
+            fzf
             git
             git-lfs
             go
@@ -61,6 +62,14 @@
             jetbrains-mono
             nerd-fonts.jetbrains-mono
           ];
+
+          nix = {
+            optimise.automatic = true;
+            gc = {
+              automatic = true;
+              options = "--delete-older-than 30d";
+            };
+          };
 
           homebrew = {
             enable = true;
