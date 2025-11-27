@@ -6,6 +6,7 @@
   programs = {
     git = {
       enable = true;
+      ignores = [ ".DS_Store" ];
       settings = {
         commit.gpgsign = true;
         core.pager = "delta --line-numbers";
