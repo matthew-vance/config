@@ -6,9 +6,13 @@
     opentofu
   ];
 
+  environment.pathsToLink = [
+    "/share/zsh"
+  ];
+
   homebrew = {
     user = "matthewvance";
-    onActivation.cleanup = "uninstall";
+    onActivation.cleanup = "zap";
     brews = [ "brogue" ];
     casks = [
       "affinity"

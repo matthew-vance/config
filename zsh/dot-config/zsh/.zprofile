@@ -4,7 +4,9 @@ export -UT INFOPATH infopath
 
 if [[ -d /opt/homebrew ]]; then
     eval "$('/opt/homebrew/bin/brew' shellenv)"
-    fpath=("$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
+    if [[ -d "/opt/homebrew/share/zsh/site-functions" ]]; then
+        fpath=("/opt/homebrew/share/zsh/site-functions" $fpath)
+    fi
 fi
 
 export ANDROID_HOME="$HOME/Library/Android/sdk"

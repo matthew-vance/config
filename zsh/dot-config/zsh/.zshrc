@@ -152,6 +152,20 @@ alias dr="docker run -it --rm"
 
 alias bupa="brew update && brew upgrade && brew cleanup && brew doctor"
 
+alias drs="sudo darwin-rebuild switch --flake $XDG_CONFIG_HOME/nix"
+alias drr="sudo darwin-rebuild switch --rollback --flake $XDG_CONFIG_HOME/nix"
+function dru() {
+  (
+    set -e
+    cd $XDG_CONFIG_HOME/nix
+    echo "🔁 Updating nixpkgs…"
+    nix flake update
+    echo "⚙️ Rebuilding system…"
+    sudo darwin-rebuild switch --flake .
+    echo "✅ Nix upgrade complete."
+  )
+}
+
 # What's running on this port?
 function rop() {
   lsof -nP -iTCP:"$1" -sTCP:LISTEN
@@ -166,6 +180,8 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
+
+
 
 has_cmd docker && eval "$(docker completion zsh)"
 has_cmd kubectl && source <(kubectl completion zsh)

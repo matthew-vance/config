@@ -1,9 +1,39 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  home.stateVersion = "25.05";
+  home = {
+    stateVersion = "25.05";
+    sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+      PAGER = "less";
+
+      LANG = "en_US.UTF-8";
+      LC_ALL = "en_US.UTF-8";
+      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+    };
+    sessionPath = [
+      "${config.home.homeDirectory}/go/bin"
+    ];
+  };
+
+  xdg.enable = true;
 
   programs = {
+    bat.enable = true;
+    fzf = {
+      enable = true;
+      fileWidgetOptions = [
+        "--walker-skip .git,node_modules,target"
+        "--preview 'bat -n --color=always {}'"
+        "--bind 'ctrl-/:change-preview-window(down|hidden|)'"
+      ];
+    };
     git = {
       enable = true;
       ignores = [ ".DS_Store" ];
@@ -50,6 +80,7 @@
 
     home-manager.enable = true;
 
+    lazydocker.enable = true;
     lazygit = {
       enable = true;
       package = null; # Use system version. This can be removed once I make sense of user-level packages in home-manager.
@@ -231,6 +262,182 @@
           symbol = " ";
         };
       };
+    };
+
+    yazi = {
+      enable = true;
+      settings = {
+        mgr = {
+          show_hidden = true;
+          scrolloff = 10;
+        };
+      };
+    };
+
+    zoxide = {
+      enable = true;
+      options = [
+        "--cmd cd"
+      ];
+    };
+
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+
+      defaultKeymap = "viins";
+
+      history = {
+        append = true;
+        expireDuplicatesFirst = true;
+        extended = true;
+        findNoDups = true;
+        ignoreAllDups = true;
+        ignoreDups = true;
+        path = "${config.xdg.dataHome}/zsh/history";
+        save = 100000;
+        saveNoDups = true;
+        share = true;
+        size = 100000;
+      };
+
+      shellAliases = {
+        "..." = "cd ../..";
+        "...." = "cd ../../..";
+        "....." = "cd ../../../..";
+        "......" = "cd ../../../../..";
+        "cd.." = "cd ..";
+
+        "-" = "cd -";
+        "1" = "cd -1";
+        "2" = "cd -2";
+        "3" = "cd -3";
+        "4" = "cd -4";
+        "5" = "cd -5";
+        "6" = "cd -6";
+        "7" = "cd -7";
+        "8" = "cd -8";
+        "9" = "cd -9";
+
+        h = "history";
+        h1 = "history -10";
+        h2 = "history -20";
+        h3 = "history -30";
+        hs = "history | fzf --border --height 50% | copy";
+
+        copy = "pbcopy";
+        paste = "pbpaste";
+
+        a = "alias | fzf --border --height 50% | rg -o '^[^=]+' | copy";
+        c = "clear";
+
+        v = "nvim";
+
+        ip = "curl -s https://icanhazip.com; echo";
+
+        ls = "eza --oneline --classify --color=automatic --icons --time-style=long-iso --group-directories-first";
+        la = "ls --all";
+        ll = "ls --all --long --header --binary";
+        sl = "ls";
+
+        # lg = "lazygit"; -- and lg function is added by home-manager lazygit module so this is redundant
+        lzd = "lazydocker";
+
+        uuid = "uuidgen | tr '[:upper:]' '[:lower:]'";
+        uuidc = "uuid | copy";
+
+        path = "echo \"$PATH\" | tr ':' '\n'";
+        spath = "path | fzf --border --height 50% | copy";
+
+        ping = "ping -c 5";
+
+        now = "date +\"%T\"";
+
+        tf = "terraform";
+        k = "kubectl";
+        d = "docker";
+        dc = "docker-compose";
+        dr = "docker run -it --rm";
+
+        drs = "sudo darwin-rebuild switch --flake $XDG_CONFIG_HOME/nix";
+        drr = "sudo darwin-rebuild switch --rollback --flake $XDG_CONFIG_HOME/nix";
+      };
+
+      siteFunctions = {
+        mkcd = ''
+          mkdir --parents "$1" && cd "$1"
+        '';
+        rop = ''
+          lsof -nP -iTCP:"$1" -sTCP:LISTEN
+        '';
+        dru = ''
+          (
+            set -e
+            cd $XDG_CONFIG_HOME/nix
+            echo "🔁 Updating nixpkgs…"
+            nix flake update
+            echo "⚙️ Rebuilding system…"
+            sudo darwin-rebuild switch --flake .
+            echo "✅ Nix upgrade complete."
+          )
+        '';
+      };
+
+      autocd = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+
+      antidote = {
+        enable = true;
+        plugins = [
+          "mattmc3/ez-compinit"
+          "zsh-users/zsh-completions kind:fpath path:src"
+          "davidde/git"
+          "Aloxaf/fzf-tab"
+          "zsh-users/zsh-syntax-highlighting kind:defer"
+          "zsh-users/zsh-autosuggestions"
+        ];
+      };
+
+      initContent =
+        let
+          zshConfigEarlyInit = lib.mkOrder 500 ''
+            setopt AUTO_PUSHD
+            setopt PUSHD_IGNORE_DUPS
+            setopt PUSHD_MINUS
+
+            setopt ALWAYS_TO_END
+            setopt AUTO_LIST
+            setopt AUTO_MENU
+            setopt AUTO_PARAM_SLASH
+            setopt COMPLETE_IN_WORD
+            setopt EXTENDED_GLOB
+            unsetopt FLOW_CONTROL
+            unsetopt MENU_COMPLETE
+
+            setopt NUMERIC_GLOB_SORT
+
+            setopt INTERACTIVE_COMMENTS
+            setopt HASH_EXECUTABLES_ONLY
+          '';
+          zshConfig = lib.mkOrder 1000 ''
+
+          '';
+          zshConfigAfter = lib.mkOrder 1500 ''
+            eval "$(fnm env --use-on-cd --shell zsh)"
+            eval "$(docker completion zsh)"
+            source <(kubectl completion zsh)
+
+            export PYENV_ROOT="$HOME/.pyenv"
+            [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init - zsh)"
+          '';
+        in
+        lib.mkMerge [
+          zshConfigEarlyInit
+          zshConfig
+          zshConfigAfter
+        ];
     };
   };
 }
