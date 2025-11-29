@@ -40,16 +40,14 @@
             lazydocker
             lua
             jq
-            just
             kubectl
             lazygit
             neovim
             nixfmt
-            pyenv
             ripgrep
             starship
-            stow
             terraform
+            unixtools.watch
             unzip
             watchman
             wget
@@ -135,7 +133,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.matthewvance = import ./home/matthew.nix;
+              users.matthewvance = ./home/matthewvance.nix;
             };
           }
         ];

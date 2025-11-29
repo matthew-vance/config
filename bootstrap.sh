@@ -44,28 +44,16 @@ has_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
 
-install_homebrew() {
-  if ! has_cmd brew; then
-    if ! has_cmd bash; then
-      error "bash not found, required for Homebrew installation. Please install bash and re-run this script."
-      exit 1
-    fi
-    if ! has_cmd curl; then
-      error "curl not found, required for Homebrew installation. Please install curl and re-run this script."
-      exit 1
-    fi
-    sudo -v
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    if [ -f /opt/homebrew/bin/brew ]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
-  fi
-}
-
 main() {
   ensure_macos
   info "Starting bootstrap process..."
+
+  if ! has_cmd nix; then
+    error "Nix package manager not found. Please install Nix using `curl -fsSL https://install.determinate.systems/nix | sh -s -- install --prefer-upstream-nix` and re-run this script."
+    exit 1
+  else
+    ok "Nix package manager found."
+  fi
   
   if ! has_cmd brew; then
     if ! has_cmd bash; then
@@ -85,40 +73,17 @@ main() {
     fi
     ok "Homebrew installed."
   else
-    info "Homebrew found. Updating Homebrew..."
+    ok "Homebrew found."
+    info "Updating Homebrew..."
     brew update
     ok "Homebrew updated."
   fi
 
-  if [ -f "Brewfile" ]; then
-    brew bundle check >/dev/null 2>&1  || {
-      info "Installing packages from Brewfile..."
-      brew bundle
-      ok "Brewfile packages installed."
-    }
-  fi
- 
-  BREW_ZSH="$(brew --prefix)/bin/zsh"
+  info "Setting up nix-darwin..."
+  sudo nix run 'nix-darwin/master#darwin-rebuild' -- switch --flake "$HOME/code/config/nix"
+  ok "nix-darwin setup complete."
 
-  if ! grep -q "$BREW_ZSH" /etc/shells; then
-    info "Adding Homebrew's zsh to /etc/shells..."
-    echo "$BREW_ZSH" | sudo tee -a /etc/shells > /dev/null
-  fi
-
-  if [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$BREW_ZSH" ]; then
-    info "Changing default shell to Homebrew's zsh..."
-    chsh -s "$BREW_ZSH"
-  fi
-  ok "Default shell is set to Homebrew's zsh."
-
-  if [ ! -L "$HOME/.stow-global-ignore" ] || [ "$(readlink "$HOME/.stow-global-ignore")" != "$PWD/dot-stow-global-ignore" ]; then
-    info "Setting up GNU Stow global ignore..."
-    ln -sf "$PWD/dot-stow-global-ignore" "$HOME/.stow-global-ignore"
-    ok "GNU Stow setup complete."
-  fi
-  ok "GNU Stow global ignore set up."
-
-  info "Bootstrap complete."
+  ok "Bootstrap complete."
   info "You may need to restart your terminal for changes to take effect."
 }
 

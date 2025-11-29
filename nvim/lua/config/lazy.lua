@@ -27,4 +27,5 @@ require("lazy").setup({
 		{ import = "plugins" },
 	},
 	checker = { enabled = true },
+	lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json"
 })

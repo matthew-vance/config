@@ -9,7 +9,6 @@
   home = {
     stateVersion = "25.05";
     sessionVariables = {
-      EDITOR = "nvim";
       VISUAL = "nvim";
       PAGER = "less";
 
@@ -23,6 +22,7 @@
   };
 
   xdg.enable = true;
+  xdg.configFile."nvim".source = ../../nvim;
 
   programs = {
     bat.enable = true;
@@ -91,6 +91,13 @@
         os.editPreset = "nvim";
         gui.nerdFontsVersion = "3";
       };
+    };
+
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      viAlias = true;
+      vimAlias = true;
     };
 
     starship = {
@@ -359,8 +366,8 @@
         dc = "docker-compose";
         dr = "docker run -it --rm";
 
-        drs = "sudo darwin-rebuild switch --flake $XDG_CONFIG_HOME/nix";
-        drr = "sudo darwin-rebuild switch --rollback --flake $XDG_CONFIG_HOME/nix";
+        drs = "sudo darwin-rebuild switch --flake $HOME/code/config/nix && exec zsh";
+        drr = "sudo darwin-rebuild switch --rollback --flake $HOME/code/config/nix && exec zsh";
       };
 
       siteFunctions = {
@@ -373,7 +380,7 @@
         dru = ''
           (
             set -e
-            cd $XDG_CONFIG_HOME/nix
+            cd $HOME/code/config/nix
             echo "🔁 Updating nixpkgs…"
             nix flake update
             echo "⚙️ Rebuilding system…"
@@ -402,6 +409,10 @@
       initContent =
         let
           zshConfigEarlyInit = lib.mkOrder 500 ''
+            if [ -x /opt/homebrew/bin/brew ]; then
+              eval "$(/opt/homebrew/bin/brew shellenv)"
+            fi
+
             setopt AUTO_PUSHD
             setopt PUSHD_IGNORE_DUPS
             setopt PUSHD_MINUS
@@ -427,10 +438,7 @@
             eval "$(fnm env --use-on-cd --shell zsh)"
             eval "$(docker completion zsh)"
             source <(kubectl completion zsh)
-
-            export PYENV_ROOT="$HOME/.pyenv"
-            [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-            eval "$(pyenv init - zsh)"
+            eval "$(op completion zsh)"
           '';
         in
         lib.mkMerge [
