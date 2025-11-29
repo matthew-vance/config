@@ -23,6 +23,7 @@
 
   xdg.enable = true;
   xdg.configFile."nvim".source = ../../nvim;
+  xdg.configFile."lazygit".source = ../../lazygit;
 
   programs = {
     bat.enable = true;
@@ -81,17 +82,6 @@
     home-manager.enable = true;
 
     lazydocker.enable = true;
-    lazygit = {
-      enable = true;
-      package = null; # Use system version. This can be removed once I make sense of user-level packages in home-manager.
-      settings = {
-        promptToReturnFromSubprocesses = false;
-        disableStartupPopups = true;
-        quitOnTopLevelReturn = true;
-        os.editPreset = "nvim";
-        gui.nerdFontsVersion = "3";
-      };
-    };
 
     neovim = {
       enable = true;
@@ -347,7 +337,7 @@
         ll = "ls --all --long --header --binary";
         sl = "ls";
 
-        # lg = "lazygit"; -- and lg function is added by home-manager lazygit module so this is redundant
+        lg = "lazygit";
         lzd = "lazydocker";
 
         uuid = "uuidgen | tr '[:upper:]' '[:lower:]'";
