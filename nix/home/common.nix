@@ -25,9 +25,15 @@
 
   xdg.enable = true;
   xdg.configFile."nvim".source = ../../nvim;
+  xdg.configFile."yazi/theme.toml".source = ../../yazi/theme.toml;
 
   programs = {
-    bat.enable = true;
+    bat = {
+      enable = true;
+      config = {
+        theme = "Catppuccin Mocha";
+      };
+    };
     fzf = {
       enable = true;
       fileWidgetOptions = [
