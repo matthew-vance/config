@@ -419,6 +419,23 @@
         '';
       };
 
+      setOptions = [
+        "AUTO_PUSHD"
+        "PUSHD_IGNORE_DUPS"
+        "PUSHD_MINUS"
+        "ALWAYS_TO_END"
+        "AUTO_LIST"
+        "AUTO_MENU"
+        "AUTO_PARAM_SLASH"
+        "COMPLETE_IN_WORD"
+        "EXTENDED_GLOB"
+        "NUMERIC_GLOB_SORT"
+        "INTERACTIVE_COMMENTS"
+        "HASH_EXECUTABLES_ONLY"
+        "NO_FLOW_CONTROL"
+        "NO_MENU_COMPLETE"
+      ];
+
       autocd = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -435,31 +452,16 @@
         ];
       };
 
-      initContent =
-        let
-          zshConfigEarlyInit = lib.mkOrder 500 ''
-            if [ -x /opt/homebrew/bin/brew ]; then
-              eval "$(/opt/homebrew/bin/brew shellenv)"
-            fi
+      initContent = ''
+        if [ -x /opt/homebrew/bin/brew ]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
 
-            setopt AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS ALWAYS_TO_END AUTO_LIST AUTO_MENU AUTO_PARAM_SLASH COMPLETE_IN_WORD EXTENDED_GLOB NUMERIC_GLOB_SORT INTERACTIVE_COMMENTS HASH_EXECUTABLES_ONLY
-            unsetopt FLOW_CONTROL MENU_COMPLETE
-          '';
-          zshConfig = lib.mkOrder 1000 ''
-
-          '';
-          zshConfigAfter = lib.mkOrder 1500 ''
-            eval "$(fnm env --use-on-cd --shell zsh)"
-            eval "$(docker completion zsh)"
-            source <(kubectl completion zsh)
-            eval "$(op completion zsh)"
-          '';
-        in
-        lib.mkMerge [
-          zshConfigEarlyInit
-          zshConfig
-          zshConfigAfter
-        ];
+        eval "$(fnm env --use-on-cd --shell zsh)"
+        eval "$(docker completion zsh)"
+        source <(kubectl completion zsh)
+        eval "$(op completion zsh)"
+      '';
     };
   };
 }
