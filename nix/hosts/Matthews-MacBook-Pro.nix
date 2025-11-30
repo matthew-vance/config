@@ -12,7 +12,12 @@
 
   homebrew = {
     user = "matthewvance";
-    onActivation.cleanup = "zap";
+    global.brewfile = true;
+    onActivation = {
+      cleanup = "zap";
+      upgrade = true;
+      autoUpdate = true;
+    };
     brews = [ "brogue" ];
     casks = [
       "affinity"
@@ -22,9 +27,6 @@
       "godot"
       "iina"
       "mullvad-vpn"
-      "pearcleaner"
-      "utm"
-      "wifiman"
     ];
   };
 

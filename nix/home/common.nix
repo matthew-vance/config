@@ -399,8 +399,8 @@
         dc = "docker-compose";
         dr = "docker run -it --rm";
 
-        drs = "sudo darwin-rebuild switch --flake $HOME/code/config/nix && exec zsh";
-        drr = "sudo darwin-rebuild switch --rollback --flake $HOME/code/config/nix && exec zsh";
+        drs = "sudo darwin-rebuild switch --flake ${config.home.homeDirectory}/code/config/nix && exec zsh";
+        drr = "sudo darwin-rebuild switch --rollback --flake ${config.home.homeDirectory}/code/config/nix && exec zsh";
       };
 
       siteFunctions = {
@@ -413,7 +413,7 @@
         dru = ''
           (
             set -e
-            cd $HOME/code/config/nix
+            cd ${config.home.homeDirectory}/code/config/nix
             echo "🔁 Updating nixpkgs…"
             nix flake update
             echo "⚙️ Rebuilding system…"
