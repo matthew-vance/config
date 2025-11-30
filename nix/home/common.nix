@@ -14,7 +14,7 @@
 
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
-      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+      MANPAGER = "sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'";
 
       HOMEBREW_NO_ANALYTICS = "1";
     };
@@ -401,6 +401,8 @@
 
         drs = "sudo darwin-rebuild switch --flake ${config.home.homeDirectory}/code/config/nix && exec zsh";
         drr = "sudo darwin-rebuild switch --rollback --flake ${config.home.homeDirectory}/code/config/nix && exec zsh";
+
+        cat = "bat";
       };
 
       siteFunctions = {
