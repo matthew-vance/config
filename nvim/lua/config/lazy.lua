@@ -27,5 +27,7 @@ require("lazy").setup({
 		{ import = "plugins" },
 	},
 	checker = { enabled = true },
-	lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json"
+	-- nix really doesn't like something editing files it controlls, so we set the lockfile to a location outside the nix store.
+	-- Downside is that this lockfile won't be under version control, but reproducible neovim config is not important to me so that's ok.
+	lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
 })
