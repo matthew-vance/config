@@ -15,6 +15,8 @@
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+
+      HOMEBREW_NO_ANALYTICS = "1";
     };
     sessionPath = [
       "${config.home.homeDirectory}/go/bin"
@@ -23,7 +25,6 @@
 
   xdg.enable = true;
   xdg.configFile."nvim".source = ../../nvim;
-  xdg.configFile."lazygit".source = ../../lazygit;
 
   programs = {
     bat.enable = true;
@@ -82,6 +83,18 @@
     home-manager.enable = true;
 
     lazydocker.enable = true;
+    lazygit = {
+      enable = true;
+      settings = {
+        disableStartupPopups = true;
+        os = {
+          editPreset = "nvim";
+        };
+        gui = {
+          nerdFontsVersion = "3";
+        };
+      };
+    };
 
     neovim = {
       enable = true;
@@ -403,23 +416,8 @@
               eval "$(/opt/homebrew/bin/brew shellenv)"
             fi
 
-            setopt AUTO_PUSHD
-            setopt PUSHD_IGNORE_DUPS
-            setopt PUSHD_MINUS
-
-            setopt ALWAYS_TO_END
-            setopt AUTO_LIST
-            setopt AUTO_MENU
-            setopt AUTO_PARAM_SLASH
-            setopt COMPLETE_IN_WORD
-            setopt EXTENDED_GLOB
-            unsetopt FLOW_CONTROL
-            unsetopt MENU_COMPLETE
-
-            setopt NUMERIC_GLOB_SORT
-
-            setopt INTERACTIVE_COMMENTS
-            setopt HASH_EXECUTABLES_ONLY
+            setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS ALWAYS_TO_END AUTO_LIST AUTO_MENU AUTO_PARAM_SLASH COMPLETE_IN_WORD EXTENDED_GLOB NUMERIC_GLOB_SORT INTERACTIVE_COMMENTS HASH_EXECUTABLES_ONLY
+            unsetopt FLOW_CONTROL MENU_COMPLETE
           '';
           zshConfig = lib.mkOrder 1000 ''
 
