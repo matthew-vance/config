@@ -44,7 +44,9 @@
             lazygit
             neovim
             nixfmt
+            python3
             ripgrep
+            ruby
             starship
             terraform
             unixtools.watch
