@@ -41,11 +41,6 @@
       ignores = [ ".DS_Store" ];
       settings = {
         commit.gpgsign = true;
-        core.pager = "delta --line-numbers";
-        delta = {
-          hyperlinks = true;
-          interactive.keep-plus-minus-markers = false;
-        };
         diff.colorMoved = "default";
         filter.lfs = {
           clean = "git-lfs clean -- %f";
@@ -55,7 +50,6 @@
         };
         gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
         init.defaultBranch = "main";
-        interactive.diffFilter = "delta --color-only --features=interactive";
         merge.conflictStyle = "diff3";
         pull.rebase = "false";
         push.autoSetupRemote = true;

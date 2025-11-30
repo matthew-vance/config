@@ -28,7 +28,6 @@
             antidote
             bat
             curl
-            delta
             eza
             fd
             fnm
