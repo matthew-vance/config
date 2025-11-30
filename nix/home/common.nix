@@ -76,7 +76,7 @@
       settings = {
         font-size = 14;
         font-family = "JetBrains Mono";
-        theme = "Night Owl";
+        theme = "Catppuccin Mocha";
       };
     };
 
@@ -92,6 +92,36 @@
         };
         gui = {
           nerdFontsVersion = "3";
+          theme = {
+            activeBorderColor = [
+              "#89b4fa"
+              "bold"
+            ];
+            inactiveBorderColor = [
+              "#a6adc8"
+            ];
+            optionsTextColor = [
+              "#89b4fa"
+            ];
+            selectedLineBgColor = [
+              "#313244"
+            ];
+            cherryPickedCommitBgColor = [
+              "#45475a"
+            ];
+            cherryPickedCommitFgColor = [
+              "#89b4fa"
+            ];
+            unstagedChangesColor = [
+              "#f38ba8"
+            ];
+            defaultFgColor = [
+              "#cdd6f4"
+            ];
+            searchingActiveBorderColor = [
+              "#f9e2af"
+            ];
+          };
         };
       };
     };
@@ -416,7 +446,7 @@
               eval "$(/opt/homebrew/bin/brew shellenv)"
             fi
 
-            setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS ALWAYS_TO_END AUTO_LIST AUTO_MENU AUTO_PARAM_SLASH COMPLETE_IN_WORD EXTENDED_GLOB NUMERIC_GLOB_SORT INTERACTIVE_COMMENTS HASH_EXECUTABLES_ONLY
+            setopt AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS ALWAYS_TO_END AUTO_LIST AUTO_MENU AUTO_PARAM_SLASH COMPLETE_IN_WORD EXTENDED_GLOB NUMERIC_GLOB_SORT INTERACTIVE_COMMENTS HASH_EXECUTABLES_ONLY
             unsetopt FLOW_CONTROL MENU_COMPLETE
           '';
           zshConfig = lib.mkOrder 1000 ''
