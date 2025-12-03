@@ -5,6 +5,8 @@
 set -o errexit
 set -o nounset
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 ensure_macos() {
   if [ "$(uname)" != "Darwin" ]; then
     echo "Error: This script must be run on macOS (Darwin)." >&2
@@ -79,11 +81,17 @@ main() {
     ok "Homebrew updated."
   fi
 
+  if [[ ! -f "$SCRIPT_DIR/git/local.gitconfig" ]]; then
+    cp "$SCRIPT_DIR/git/local.gitconfig.template" "$SCRIPT_DIR/git/local.gitconfig"
+  fi
+
   info "Setting up nix-darwin..."
-  sudo nix run 'nix-darwin/master#darwin-rebuild' -- switch --flake "$HOME/code/config/nix"
+  sudo nix run 'nix-darwin/master#darwin-rebuild' -- switch --flake "$SCRIPT_DIR/nix"
   ok "nix-darwin setup complete."
 
   ok "Bootstrap complete."
+  info "A private Git configuration file has been created at $SCRIPT_DIR/git/local.gitconfig."
+  info "Edit this file to add your personal Git settings."
   info "You may need to restart your terminal for changes to take effect."
 }
 
