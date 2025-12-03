@@ -24,9 +24,12 @@
   };
 
   xdg.enable = true;
-  xdg.configFile."nvim".source = ../../nvim;
-  xdg.configFile."yazi/theme.toml".source = ../../yazi/theme.toml;
-  xdg.configFile."git/local.gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/code/config/git/local.gitconfig";
+  xdg.configFile = {
+    "nvim".source = ../../nvim;
+    "yazi/theme.toml".source = ../../yazi/theme.toml;
+    "git/local.gitconfig".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/code/config/git/local.gitconfig";
+  };
 
   programs = {
     bat = {
