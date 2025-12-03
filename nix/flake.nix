@@ -139,5 +139,22 @@
           }
         ];
       };
+
+      darwinConfigurations."KQ21CX7KQV" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [
+          configuration
+          ./hosts/KQ21CX7KQV.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users."matthew.vance" = ./home/matthew.vance.nix;
+            };
+          }
+        ];
+      };
     };
+
 }

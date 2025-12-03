@@ -26,6 +26,7 @@
   xdg.enable = true;
   xdg.configFile."nvim".source = ../../nvim;
   xdg.configFile."yazi/theme.toml".source = ../../yazi/theme.toml;
+  xdg.configFile."git/local.gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/code/config/git/local.gitconfig";
 
   programs = {
     bat = {
@@ -45,6 +46,11 @@
     git = {
       enable = true;
       ignores = [ ".DS_Store" ];
+      includes = [
+        {
+          path = "${config.xdg.configHome}/git/local.gitconfig";
+        }
+      ];
       settings = {
         commit.gpgsign = true;
         diff.colorMoved = "default";
@@ -59,14 +65,9 @@
         merge.conflictStyle = "diff3";
         pull.rebase = "false";
         push.autoSetupRemote = true;
-        user = {
-          name = "Matthew Vance";
-          email = "mavance44@gmail.com";
-        };
       };
       signing = {
         format = "ssh";
-        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/G8WN10/FlsokXrjIJ2C7Ev70Q8OL66dSfRXmP94hU";
       };
     };
 

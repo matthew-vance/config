@@ -7,5 +7,5 @@
 !**/zsh/local/.gitkeep
 .zcompdump
 
-dot-local.gitconfig
-.local.gitconfig
+local.gitconfig
+*.local.gitconfig
