@@ -14,6 +14,19 @@
       }
     ];
 
+    lazygit = {
+      settings = {
+        git = {
+          commitPrefix = [
+            {
+              pattern = "^\\w+\\/(\\w+-\\d+).*";
+              replace = "[$1] ";
+            }
+          ];
+        };
+      };
+    };
+
     zsh = {
       initContent = lib.mkOrder 1500 ''
         [[ -s "${config.home.homeDirectory}/.sdkman/bin/sdkman-init.sh" ]] && source "${config.home.homeDirectory}/.sdkman/bin/sdkman-init.sh"
